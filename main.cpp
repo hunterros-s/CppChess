@@ -6,10 +6,17 @@ using namespace std;
 int main() {
     Game g;
 
-    //need better ways to add pieces
-    g["A1"] = new Pawn(0);
-    g["B2"] = new King(1);
+    g.populate();
 
     cout << g << endl;
+
+    g.move_piece("E2", "E4");
+
+    cout << g << endl;
+
+    g.move_piece("G8", "F6");
+
+    cout << g << endl;
+
     return 0;
 }

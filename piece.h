@@ -5,6 +5,15 @@ struct Piece {
     Piece(char c, int t) : team(t), icon(c) { }
 };
 
+enum class Pieces {
+    Pawn,
+    Bishop,
+    Knight,
+    Rook,
+    Queen,
+    King
+};
+
 struct Pawn : Piece {
     Pawn(int t) : Piece('p', t) {
         if (t == 1) { icon = toupper(icon); }
