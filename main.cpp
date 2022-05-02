@@ -1,15 +1,15 @@
 #include <iostream>
-#include "chess.h"
+#include "game.h"
 
 using namespace std;
 
-
-
 int main() {
-    Board b;
+    Game g;
 
-    b.add("A4", new Pawn()).add("A5", new Pawn());
+    //need better ways to add pieces
+    g["A1"] = new Pawn(0);
+    g["B2"] = new King(1);
 
-    b.add("A4", new Pawn());
+    cout << g << endl;
     return 0;
 }
