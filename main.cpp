@@ -1,5 +1,6 @@
 #include <iostream>
 #include "game.h"
+#include "piece.h"
 
 using namespace std;
 
@@ -10,13 +11,16 @@ int main() {
 
     cout << g << endl;
 
-    g.move_piece("E2", "E4");
+    string input;
 
-    cout << g << endl;
+    while (cin >> input) {
+        g.move_piece(
+            Position(input.substr(0,2)), 
+            Position(input.substr(2, 2))
+        );
 
-    g.move_piece("G8", "F6");
-
-    cout << g << endl;
+        cout << g << endl;
+    }
 
     return 0;
 }

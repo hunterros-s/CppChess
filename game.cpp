@@ -1,4 +1,5 @@
 #include "game.h"
+#include "piece.h"
 
 //private
 Piece * & Game::find(int row, int col) {
@@ -8,14 +9,8 @@ Piece * & Game::find(int row, int col) {
 }
 
 //public
-Piece * & Game::operator[](std::string input) {
-    char col_ = input[0];
-    char row_ = input[1];
-
-    int c = tolower(col_) - 'a';
-    int r = row_ - '1';
-
-    return find(r, c);
+Piece * & Game::operator[](Position pos) {
+    return find(pos.y, pos.x);
 }
 
 std::ostream & operator<<(std::ostream & os, Game & g) {
@@ -39,27 +34,27 @@ Game::~Game() {
     clear_board();
 }
 
-void Game::add(std::string inp, Pieces p, int team) {
-    del(inp);
+void Game::add(Position pos, Pieces p, Color team) {
+    del(pos);
     switch (p)
     {
     case Pieces::Pawn:
-        (*this)[inp] = new Pawn(team);
+        (*this)[pos] = new Pawn(team);
         break;
     case Pieces::Bishop:
-        (*this)[inp] = new Bishop(team);
+        (*this)[pos] = new Bishop(team);
         break;
     case Pieces::Knight:
-        (*this)[inp] = new Knight(team);
+        (*this)[pos] = new Knight(team);
         break;
     case Pieces::Rook:
-        (*this)[inp] = new Rook(team);
+        (*this)[pos] = new Rook(team);
         break;
     case Pieces::Queen:
-        (*this)[inp] = new Queen(team);
+        (*this)[pos] = new Queen(team);
         break;
     case Pieces::King:
-        (*this)[inp] = new King(team);
+        (*this)[pos] = new King(team);
         break;
     default:
         assert(false);
@@ -67,77 +62,74 @@ void Game::add(std::string inp, Pieces p, int team) {
     }
 }
 
-void Game::del(std::string inp) {
-    if ((*this)[inp]) {
-        delete ((*this)[inp]);
-        (*this)[inp] = nullptr;
-    }
-}
-void Game::del(int row, int col) {
-    if (find(row, col)) {
-        delete find(row, col);
-        find(row, col) = nullptr;
+void Game::del(Position pos) {
+    if ((*this)[pos]) {
+        delete ((*this)[pos]);
+        (*this)[pos] = nullptr;
     }
 }
 
 void Game::clear_board() {
     for (int r = 0; r < 8; ++r) {
         for (int c = 0; c < 8; ++c) {
-            del(r, c);
+            del(Position(c, r));
         }
     }
 }
 
-void Game::move_piece(std::string from, std::string to) {
+void Game::move_piece(Position from, Position to) {
     assert((*this)[from]);
     del(to);
     (*this)[to] = (*this)[from];
     (*this)[from] = nullptr;
 
-    std::cout << std::endl
-        << (*this)[to]->icon << from
-        << " -> " << to << std::endl << std::endl;
+    std::cout << std::endl;
+    std::cout << (*this)[to]->icon;
+    std::cout << from;
+    std::cout << " -> ";
+    std::cout << to;
+    std::cout << std::endl << std::endl;
 }
 
 void Game::populate() {
     clear_board();
 
     //white side
-    add("A2", Pieces::Pawn, 0);
-    add("B2", Pieces::Pawn, 0);
-    add("C2", Pieces::Pawn, 0);
-    add("D2", Pieces::Pawn, 0);
-    add("E2", Pieces::Pawn, 0);
-    add("F2", Pieces::Pawn, 0);
-    add("G2", Pieces::Pawn, 0);
-    add("H2", Pieces::Pawn, 0);
+    add(Position("A2"), Pieces::Pawn, Color::White);
+    add(Position("B2"), Pieces::Pawn, Color::White);
+    add(Position("C2"), Pieces::Pawn, Color::White);
+    add(Position("D2"), Pieces::Pawn, Color::White);
+    add(Position("E2"), Pieces::Pawn, Color::White);
+    add(Position("F2"), Pieces::Pawn, Color::White);
+    add(Position("G2"), Pieces::Pawn, Color::White);
+    add(Position("H2"), Pieces::Pawn, Color::White);
 
-    add("A1", Pieces::Rook, 0);
-    add("B1", Pieces::Knight, 0);
-    add("C1", Pieces::Bishop, 0);
-    add("D1", Pieces::Queen, 0);
-    add("E1", Pieces::King, 0);
-    add("F1", Pieces::Bishop, 0);
-    add("G1", Pieces::Knight, 0);
-    add("H1", Pieces::Rook, 0);
+    add(Position("A1"), Pieces::Rook, Color::White);
+    add(Position("B1"), Pieces::Knight, Color::White);
+    add(Position("C1"), Pieces::Bishop, Color::White);
+    add(Position("D1"), Pieces::Queen, Color::White);
+    add(Position("E1"), Pieces::King, Color::White);
+    add(Position("F1"), Pieces::Bishop, Color::White);
+    add(Position("G1"), Pieces::Knight, Color::White);
+    add(Position("H1"), Pieces::Rook, Color::White);
 
 
     //black side
-    add("A7", Pieces::Pawn, 1);
-    add("B7", Pieces::Pawn, 1);
-    add("C7", Pieces::Pawn, 1);
-    add("D7", Pieces::Pawn, 1);
-    add("E7", Pieces::Pawn, 1);
-    add("F7", Pieces::Pawn, 1);
-    add("G7", Pieces::Pawn, 1);
-    add("H7", Pieces::Pawn, 1);
+    add(Position("A7"), Pieces::Pawn, Color::Black);
+    add(Position("B7"), Pieces::Pawn, Color::Black);
+    add(Position("C7"), Pieces::Pawn, Color::Black);
+    add(Position("D7"), Pieces::Pawn, Color::Black);
+    add(Position("E7"), Pieces::Pawn, Color::Black);
+    add(Position("F7"), Pieces::Pawn, Color::Black);
+    add(Position("G7"), Pieces::Pawn, Color::Black);
+    add(Position("H7"), Pieces::Pawn, Color::Black);
 
-    add("A8", Pieces::Rook, 1);
-    add("B8", Pieces::Knight, 1);
-    add("C8", Pieces::Bishop, 1);
-    add("D8", Pieces::Queen, 1);
-    add("E8", Pieces::King, 1);
-    add("F8", Pieces::Bishop, 1);
-    add("G8", Pieces::Knight, 1);
-    add("H8", Pieces::Rook, 1);
+    add(Position("A8"), Pieces::Rook, Color::Black);
+    add(Position("B8"), Pieces::Knight, Color::Black);
+    add(Position("C8"), Pieces::Bishop, Color::Black);
+    add(Position("D8"), Pieces::Queen, Color::Black);
+    add(Position("E8"), Pieces::King, Color::Black);
+    add(Position("F8"), Pieces::Bishop, Color::Black);
+    add(Position("G8"), Pieces::Knight, Color::Black);
+    add(Position("H8"), Pieces::Rook, Color::Black);
 }

@@ -1,9 +1,6 @@
-struct Piece {
-    int team;
-    char icon;
+#ifndef _PIECE_
+#define _PIECE_
 
-    Piece(char c, int t) : team(t), icon(c) { }
-};
 
 enum class Pieces {
     Pawn,
@@ -14,38 +11,52 @@ enum class Pieces {
     King
 };
 
+enum class Color {
+    Black,
+    White
+};
+
+//ROW = Y
+//COL = X
+struct Position {
+    int x;
+    int y;
+    Position();
+    Position(int, int);
+    Position(std::string);
+};
+
+struct Piece {
+    Color team;
+    char icon;
+
+    Piece(char, Color);
+};
+
 struct Pawn : Piece {
-    Pawn(int t) : Piece('p', t) {
-        if (t == 1) { icon = toupper(icon); }
-    };
+    Pawn(Color t) : Piece('p', t) {};
 };
 
 struct Bishop : Piece {
-    Bishop(int t) : Piece('b', t) {
-        if (t == 1) { icon = toupper(icon); }
-    };
+    Bishop(Color t) : Piece('b', t) {};
 };
 
 struct Knight : Piece {
-    Knight(int t) : Piece('n', t) {
-        if (t == 1) { icon = toupper(icon); }
-    };
+    Knight(Color t) : Piece('n', t) {};
 };
 
 struct Rook : Piece {
-    Rook(int t) : Piece('r', t) {
-        if (t == 1) { icon = toupper(icon); }
-    };
+    Rook(Color t) : Piece('r', t) {};
 };
 
 struct Queen : Piece {
-    Queen(int t) : Piece('q', t) {
-        if (t == 1) { icon = toupper(icon); }
-    };
+    Queen(Color t) : Piece('q', t) {};
 };
 
 struct King : Piece {
-    King(int t) : Piece('k', t) {
-        if (t == 1) { icon = toupper(icon); }
-    };
+    King(Color t) : Piece('k', t) {};
 };
+
+std::ostream & operator<<(std::ostream &, const Position &);
+
+#endif
