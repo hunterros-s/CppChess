@@ -9,8 +9,13 @@ Piece * & Game::find(int row, int col) {
 }
 
 //public
+Piece * & Game::at(Position pos) {
+    return find(pos.y(), pos.x());
+}
+
+
 Piece * & Game::operator[](Position pos) {
-    return find(pos.y, pos.x);
+    return at(pos);
 }
 
 std::ostream & operator<<(std::ostream & os, Game & g) {
@@ -39,31 +44,69 @@ void Game::add(Position pos, Pieces p, Color team) {
     switch (p)
     {
     case Pieces::Pawn:
-        (*this)[pos] = new Pawn(team);
+        (*this)[pos] = new Pawn(team, this, pos);
         break;
     case Pieces::Bishop:
-        (*this)[pos] = new Bishop(team);
+        (*this)[pos] = new Bishop(team, this, pos);
         break;
     case Pieces::Knight:
-        (*this)[pos] = new Knight(team);
+        (*this)[pos] = new Knight(team, this, pos);
         break;
     case Pieces::Rook:
-        (*this)[pos] = new Rook(team);
+        (*this)[pos] = new Rook(team, this, pos);
         break;
     case Pieces::Queen:
-        (*this)[pos] = new Queen(team);
+        (*this)[pos] = new Queen(team, this, pos);
         break;
     case Pieces::King:
-        (*this)[pos] = new King(team);
+        (*this)[pos] = new King(team, this, pos);
+        break;
+    default:
+        assert(false);
+        break;
+    }
+    //add to each team pieces.
+    switch(team)
+    {
+    case Color::White:
+        white_pieces.push_back((*this)[pos]);
+        break;
+    case Color::Black:
+        black_pieces.push_back((*this)[pos]);
         break;
     default:
         assert(false);
         break;
     }
 }
-
 void Game::del(Position pos) {
     if ((*this)[pos]) {
+
+        //delete from white or black piece vector
+        switch ((*this)[pos]->team)
+        {
+        case Color::Black:
+            for (auto it = black_pieces.begin(); it != black_pieces.end(); ++it)
+            {
+                if ((*this)[pos] == *it)
+                {
+                    black_pieces.erase(it);
+                }
+            }
+            break;
+        case Color::White:
+            for (auto it = white_pieces.begin(); it != white_pieces.end(); ++it)
+            {
+                if ((*this)[pos] == *it)
+                {
+                    white_pieces.erase(it);
+                }
+            }
+            break;
+        default:
+            assert(false);
+            break;
+        }
         delete ((*this)[pos]);
         (*this)[pos] = nullptr;
     }
@@ -75,20 +118,16 @@ void Game::clear_board() {
             del(Position(c, r));
         }
     }
+    white_pieces.clear();
+    black_pieces.clear();
 }
 
 void Game::move_piece(Position from, Position to) {
     assert((*this)[from]);
     del(to);
     (*this)[to] = (*this)[from];
+    (*this)[to]->pos = to;
     (*this)[from] = nullptr;
-
-    std::cout << std::endl;
-    std::cout << (*this)[to]->icon;
-    std::cout << from;
-    std::cout << " -> ";
-    std::cout << to;
-    std::cout << std::endl << std::endl;
 }
 
 void Game::populate() {

@@ -1,9 +1,20 @@
+#ifndef _GAME_
+#define _GAME_
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <cassert>
 
 #include "piece.h"
+
+/*
+
+WHITE = 0
+BLACK = 1
+
+*/
+
 
 class Game {
 private:
@@ -12,10 +23,14 @@ private:
     /////
     Piece * & find(int, int);
 
-
+    //maybe use a map??
+    std::vector<Piece *> white_pieces;
+    std::vector<Piece *> black_pieces;
 public:
     //i should generate an attack and defend map.
     //i should make a vector for each sides' pieces
+
+    Piece * & at(Position);
 
     Piece * & operator[](Position);
 
@@ -53,3 +68,5 @@ public:
     //disable assignment operator
     Game & operator=(const Game &) = delete;
 };
+
+#endif
